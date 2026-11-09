@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Mi Pastillero - Control Diario</title>
+  <meta name="theme-color" content="#10b981">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-content">
+      <div class="app-title">
+        <span class="icon">💊</span>
+        <div>
+          <h1>Mi Pastillero</h1>
+          <p id="todayDateStr">Hoy</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Botón Modo Claro / Oscuro -->
+        <button id="btnThemeToggle" class="btn-icon" title="Cambiar Tema (Claro/Oscuro)">🌙</button>
+        <!-- Botón Agregar Medicamento -->
+        <button id="btnOpenAddMed" class="btn-icon" title="Agregar Medicamento">➕</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Resumen y Acción Rápida -->
+    <section class="card quick-action-card">
+      <div class="streak-badge">
+        <span class="fire">🔥</span> Racha: <strong id="streakCount">0 días</strong>
+      </div>
+      <h2 id="todayStatusTitle">¿Ya tomaste tu medicación de hoy?</h2>
+      <p id="todayStatusSubtitle" class="subtext">Mantén tu tratamiento al día con un solo toque.</p>
+      
+      <div class="action-buttons-group">
+        <button id="btnCheckAllToday" class="btn-primary-action">
+          <span class="check-icon">✓</span> ¡Sí, ya la tomé hoy!
+        </button>
+      </div>
+
+      <div id="todayProgressContainer" class="progress-box">
+        <div class="progress-bar-bg">
+          <div id="todayProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <span id="todayProgressText" class="progress-label">0 de 0 tomas registradas hoy</span>
+      </div>
+    </section>
+
+    <!-- Pestañas de Navegación -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" data-tab="tab-calendar">📅 Calendario</button>
+      <button class="tab-btn" data-tab="tab-today">📋 Dosis de Hoy</button>
+      <button class="tab-btn" data-tab="tab-meds">💊 Mis Medicinas</button>
+    </div>
+
+    <!-- Pestaña 1: Calendario -->
+    <section id="tab-calendar" class="tab-content active">
+      <div class="card calendar-card">
+        <div class="cal-nav">
+          <button id="btnPrevMonth" class="cal-arrow">◀</button>
+          <h3 id="calMonthYearTitle">Mes Año</h3>
+          <button id="btnNextMonth" class="cal-arrow">▶</button>
+        </div>
+
+        <div class="cal-weekdays">
+          <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+        </div>
+
+        <div id="calDaysGrid" class="cal-days-grid">
+          <!-- Generado dinámicamente -->
+        </div>
+
+        <div class="cal-legend">
+          <span class="legend-item"><span class="dot taken"></span> Tomada</span>
+          <span class="legend-item"><span class="dot partial"></span> Parcial</span>
+          <span class="legend-item"><span class="dot missed"></span> No tomada</span>
+          <span class="legend-item"><span class="dot today-dot"></span> Hoy</span>
+        </div>
+      </div>
+
+      <!-- Detalle del día seleccionado -->
+      <div id="selectedDayCard" class="card day-detail-card">
+        <div class="day-detail-header">
+          <h4 id="selectedDayTitle">Registro del Día</h4>
+          <span id="selectedDayTag" class="status-pill">Sin registro</span>
+        </div>
+        <div id="selectedDayList" class="day-doses-list">
+          <p class="empty-msg">Selecciona un día en el calendario para ver detalles.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pestaña 2: Dosis de Hoy -->
+    <section id="tab-today" class="tab-content">
+      <div class="card">
+        <div class="card-header-row">
+          <h3>Tomas Programadas</h3>
+          <button id="btnResetToday" class="btn-text">Reiniciar hoy</button>
+        </div>
+        <div id="todayMedsList" class="meds-list">
+          <!-- Lista generada con checkboxes -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Pestaña 3: Mis Medicinas -->
+    <section id="tab-meds" class="tab-content">
+      <div class="card">
+        <div class="card-header-row">
+          <h3>Medicamentos Registrados</h3>
+          <button id="btnAddNewMedInTab" class="btn-secondary">Nuevo +</button>
+        </div>
+        <div id="myMedsList" class="meds-inventory-list">
+          <!-- Lista de medicamentos -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal: Agregar / Editar Medicamento -->
+  <div id="medModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Agregar Medicamento</h3>
+        <button id="btnCloseModal" class="modal-close">✕</button>
+      </div>
+      <form id="medForm">
+        <input type="hidden" id="medId">
+        <div class="form-group">
+          <label for="medName">Nombre del Medicamento *</label>
+          <input type="text" id="medName" required placeholder="Ej: Losartán, Paracetamol, Metformina">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="medDose">Dosis / Presentación</label>
+            <input type="text" id="medDose" placeholder="Ej: 50mg, 1 tableta">
+          </div>
+          <div class="form-group">
+            <label for="medTime">Hora Habitual</label>
+            <input type="time" id="medTime" value="08:00">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="medNotes">Indicaciones / Notas</label>
+          <input type="text" id="medNotes" placeholder="Ej: Tomar en el desayuno con abundante agua">
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btnCancelModal" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Medicamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

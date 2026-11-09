@@ -1,0 +1,6 @@
+{
+  "appId": "com.mipastillero.controlmedicinas",
+  "appName": "Mi Pastillero",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Mi Pastillero Calendario",
+  "short_name": "Pastillero",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#10b981",
+  "theme_color": "#10b981",
+  "description": "Control y registro diario de medicamentos en calendario con modo oscuro",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
